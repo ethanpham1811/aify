@@ -3,8 +3,8 @@ import {useNavigate} from 'react-router-dom'
 import jwt_decode from 'jwt-decode'
 
 import {client} from '../client'
-import shareVideo from ''
-import logo from ''
+import shareVideo from '../assets/login.mp4'
+import logo from '../assets/logowhite.png'
 
 const Login = () => {
   const navigate = useNavigate()
