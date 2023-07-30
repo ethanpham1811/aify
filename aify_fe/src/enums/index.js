@@ -8,3 +8,8 @@ export const breakpointColumnsObj = {
   1000: 2,
   500: 1
 }
+
+export const profileTabLable = {
+  Created: 'Created',
+  Saved: 'Saved'
+}

@@ -19,7 +19,7 @@ const SearchBar = ({handleSearch}) => {
   }, [searchParams])
 
   return (
-    <div className="flex justify-start items-center w-full px-2 rounded-md bg-white border-none outline-none focus-within:shadow-sm">
+    <div className="flex mx-2 justify-start items-center w-full px-2 rounded-md bg-white border-none outline-none focus-within:shadow-sm">
       <form onSubmit={handleSubmit(handleSubmitForm)} className="flex flex-1">
         <button type="submit" className="outline-none hover:border-transparent focus:outline-none">
           <IoMdSearch fontSize={21} className="ml-1" />

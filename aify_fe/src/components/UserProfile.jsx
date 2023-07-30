@@ -1,12 +1,14 @@
 import {useEffect, useState} from 'react'
 import {AiOutlineLogout} from 'react-icons/ai'
-import {useParams, useNavigate} from 'react-router-dom'
+import {useParams, useNavigate, Link} from 'react-router-dom'
 import {googleLogout} from '@react-oauth/google'
 
 import {userPostsQuery, userQuery, userSavedPostsQuery} from '../utils/data'
 import {client} from '../client'
 import MasonryLayout from './MasonryLayout'
 import Spinner from './Spinner'
+import {profileTabLable} from '../enums'
+import {IoMdAdd} from 'react-icons/io'
 
 const activeBtnStyles = 'bg-red-500 text-white font-bold p-2 rounded-full w-20 outline-none'
 const notActiveBtnStyles = 'bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none'
@@ -14,8 +16,7 @@ const notActiveBtnStyles = 'bg-primary mr-4 text-black font-bold p-2 rounded-ful
 const UserProfile = () => {
   const [user, setUser] = useState()
   const [posts, setPosts] = useState()
-  const [text, setText] = useState('Created')
-  const [activeBtn, setActiveBtn] = useState('created')
+  const [activeBtn, setActiveBtn] = useState(profileTabLable.Created)
   const navigate = useNavigate()
   const {userId} = useParams()
 
@@ -23,26 +24,15 @@ const UserProfile = () => {
 
   useEffect(() => {
     const query = userQuery(userId)
-    client.fetch(query).then((data) => {
-      setUser(data[0])
-    })
+    client.fetch(query).then((data) => setUser(data[0]))
+    getPosts(activeBtn)
   }, [userId])
 
-  useEffect(() => {
-    if (text === 'Created') {
-      const createdPostsQuery = userPostsQuery(userId)
-
-      client.fetch(createdPostsQuery).then((data) => {
-        setPosts(data)
-      })
-    } else {
-      const savedPostsQuery = userSavedPostsQuery(userId)
-
-      client.fetch(savedPostsQuery).then((data) => {
-        setPosts(data)
-      })
-    }
-  }, [text, userId])
+  const getPosts = (text) => {
+    const query = text === profileTabLable.Created ? userPostsQuery(userId) : userSavedPostsQuery(userId)
+    client.fetch(query).then((data) => setPosts(data))
+    setActiveBtn(text)
+  }
 
   const handleLogoutRespond = () => {
     googleLogout()
@@ -56,6 +46,7 @@ const UserProfile = () => {
     <div className="relative pb-2 h-full justify-center items-center">
       <div className="flex flex-col pb-5">
         <div className="relative flex flex-col mb-7">
+          {/* Cover */}
           <div className="flex flex-col justify-center items-center">
             <img
               className=" w-full h-370 2xl:h-510 shadow-lg object-cover"
@@ -64,7 +55,16 @@ const UserProfile = () => {
             />
             <img className="rounded-full w-20 h-20 -mt-10 shadow-xl object-cover" src={user.image} alt="user-pic" />
           </div>
+
+          {/* Username */}
           <h1 className="font-bold text-3xl text-center mt-3">{user.userName}</h1>
+
+          {/* Create post btn */}
+          <Link to="/create-post" className="absolute bg-black text-white rounded-lg w-12 h-12 md:w-14 md:h-12 flex justify-center items-center">
+            <IoMdAdd />
+          </Link>
+
+          {/* Logout btn */}
           <div className="absolute top-0 z-1 right-0 p-2">
             {userId === localUser.jti && (
               <button type="button" className=" bg-white p-2 rounded-full cursor-pointer outline-none shadow-md" onClick={handleLogoutRespond}>
@@ -73,33 +73,29 @@ const UserProfile = () => {
             )}
           </div>
         </div>
+
+        {/* Posts list tab*/}
         <div className="text-center mb-7">
           <button
             type="button"
-            onClick={(e) => {
-              setText(e.target.textContent)
-              setActiveBtn('created')
-            }}
-            className={`${activeBtn === 'created' ? activeBtnStyles : notActiveBtnStyles}`}
+            onClick={(e) => getPosts(e.target.textContent)}
+            className={`${activeBtn === profileTabLable.Created ? activeBtnStyles : notActiveBtnStyles}`}
           >
-            Created
+            {profileTabLable.Created}
           </button>
           <button
             type="button"
-            onClick={(e) => {
-              setText(e.target.textContent)
-              setActiveBtn('saved')
-            }}
-            className={`${activeBtn === 'saved' ? activeBtnStyles : notActiveBtnStyles}`}
+            onClick={(e) => getPosts(e.target.textContent)}
+            className={`${activeBtn === profileTabLable.Saved ? activeBtnStyles : notActiveBtnStyles}`}
           >
-            Saved
+            {profileTabLable.Saved}
           </button>
         </div>
 
+        {/* User posts list */}
         <div className="px-2">
           <MasonryLayout posts={posts} />
         </div>
-
         {posts?.length === 0 && <div className="flex justify-center font-bold items-center w-full text-1xl mt-2">No Posts Found!</div>}
       </div>
     </div>

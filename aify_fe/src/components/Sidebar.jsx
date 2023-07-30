@@ -12,16 +12,18 @@ const Sidebar = ({closeToggle, user, categories}) => {
   }
 
   return (
-    <div className="flex flex-col justify-between bg-white h-full overflow-y-scroll min-w-210 hide-scrollbar">
-      <div className="flex flex-col">
+    <div className="grid grid-col-1 bg-white min-w-210 h-screen">
+      <div>
         <Link to="/" className="flex px-5 gap-2 my-6 pt-1 w-190 items-center" onClick={handleCloseSidebar}>
           <img src={logo} alt="logo" className="w-full" />
         </Link>
-        <div className="flex flex-col gap-5">
-          <NavLink to="/" className={({isActive}) => (isActive ? isActiveStyle : isNotActiveStyle)} onClick={handleCloseSidebar}>
-            <RiHomeFill />
-            Home
-          </NavLink>
+        <NavLink to="/" className={({isActive}) => (isActive ? isActiveStyle : isNotActiveStyle)} onClick={handleCloseSidebar}>
+          <RiHomeFill />
+          Home
+        </NavLink>
+      </div>
+      <div className="overflow-y-scroll">
+        <div className="flex flex-col gap-5 ">
           <h3 className="mt-2 px-5 text-base 2xl:text-xl">Discover cateogries</h3>
           {categories?.length &&
             categories.slice(0, categories.length - 1).map((category) => (

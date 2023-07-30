@@ -51,7 +51,7 @@ const Post = ({post}) => {
   }
 
   return (
-    <div className="m-2">
+    <div className="m-2 bg-white rounded-xl">
       <div
         onMouseEnter={() => setPostHovered(true)}
         onMouseLeave={() => setPostHovered(false)}
@@ -72,25 +72,6 @@ const Post = ({post}) => {
                   <MdDownloadForOffline />
                 </a>
               </div>
-              {alreadySaved?.length !== 0 ? (
-                <button
-                  type="button"
-                  className="bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none"
-                >
-                  {post?.save?.length} Saved
-                </button>
-              ) : (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    savePost(_id)
-                  }}
-                  type="button"
-                  className="bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none"
-                >
-                  {post?.save?.length} {savingPost ? 'Saving' : 'Save'}
-                </button>
-              )}
             </div>
             <div className=" flex justify-between items-center gap-2 w-full">
               {url?.slice(8).length > 0 ? (
@@ -121,10 +102,34 @@ const Post = ({post}) => {
           </div>
         )}
       </div>
-      <Link to={`/user-profile/${postedBy?._id}`} className="flex gap-2 mt-2 items-center">
-        <img className="w-8 h-8 rounded-full object-cover" src={postedBy?.image} alt="user-profile" />
-        <p className="font-semibold capitalize">{postedBy?.userName}</p>
-      </Link>
+      <div className="p-3 flex justify-between">
+        {/* user info */}
+        <Link to={`/user-profile/${postedBy?._id}`} className="flex gap-2 mt-2 items-center">
+          <img className="w-8 h-8 rounded-full object-cover" src={postedBy?.image} alt="user-profile" />
+          <p className="font-semibold capitalize text-black">{postedBy?.userName}</p>
+        </Link>
+
+        {/* save btn */}
+        {alreadySaved?.length !== 0 ? (
+          <button
+            type="button"
+            className="bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none"
+          >
+            {post?.save?.length} Saved
+          </button>
+        ) : (
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              savePost(_id)
+            }}
+            type="button"
+            className="bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none"
+          >
+            {post?.save?.length} {savingPost ? 'Saving' : 'Save'}
+          </button>
+        )}
+      </div>
     </div>
   )
 }

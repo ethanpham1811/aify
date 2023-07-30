@@ -56,10 +56,10 @@ const PostDetail = ({user}) => {
   return (
     <>
       {postDetail && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:flex-row flex-col m-auto bg-white" style={{maxWidth: '1500px', borderRadius: '32px'}}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:flex-row flex-col mx-[-20px] bg-white">
           {/* Left side: Image */}
-          <div className="flex justify-center items-center md:items-start flex-initial">
-            <img className="rounded-t-3xl rounded-b-lg" src={postDetail?.image && urlFor(postDetail?.image).url()} alt="user-post" />
+          <div className="flex justify-center items-center flex-initial max-h-[600px] overflow-hidden">
+            <img className="w-full object-cover" src={postDetail?.image && urlFor(postDetail?.image).url()} alt="user-post" />
           </div>
           {/* Right side: Info */}
           <div className="w-full p-5 flex-1 xl:min-w-620">
@@ -119,7 +119,7 @@ const PostDetail = ({user}) => {
           </div>
         </div>
       )}
-      {<h2 className="text-center font-bold text-2xl mt-8 mb-4">More like this</h2>}
+      {<h2 className="text-center font-bold text-white text-2xl mt-8 mb-4">More like this</h2>}
       {loading ? <Spinner message="Loading more posts" /> : <MasonryLayout posts={posts} />}
     </>
   )

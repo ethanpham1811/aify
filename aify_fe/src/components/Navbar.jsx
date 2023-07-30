@@ -5,7 +5,7 @@ import SearchBar from './SearchBar'
 export const Navbar = ({user, handleSearch}) => {
   if (user) {
     return (
-      <div className="flex gap-2 md:gap-5 w-full mt-5 pb-7 ">
+      <div className="flex bg-feed gap-2 md:gap-5 w-full mt-5 pb-7 ">
         <SearchBar handleSearch={handleSearch}></SearchBar>
         <div className="flex gap-3 ">
           <Link to={`user-profile/${user?._id}`} className="hidden md:block">
