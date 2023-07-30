@@ -1,80 +1,33 @@
-export const categories = [
-  {
-    name: 'cars',
-    image: ''
-  },
-  {
-    name: 'fitness',
-    image: ''
-  },
-  {
-    name: 'wallpaper',
-    image: ''
-  },
-  {
-    name: 'websites',
-    image: ''
-  },
-  {
-    name: 'photo',
-    image: ''
-  },
-  {
-    name: 'food',
-    image: ''
-  },
-  {
-    name: 'nature',
-    image: ''
-  },
-  {
-    name: 'art',
-    image: ''
-  },
-  {
-    name: 'travel',
-    image: ''
-  },
-  {
-    name: 'quotes',
-    image: ''
-  },
-  {
-    name: 'cats',
-    image: ''
-  },
-  {
-    name: 'dogs',
-    image: ''
-  },
-  {
-    name: 'others',
-    image: ''
-  }
-]
+/* User queries */
+export const userQuery = (userId) => {
+  const query = `*[_type == "user" && _id == '${userId}']`
+  return query
+}
 
-export const feedQuery = `*[_type == "post"] | order(_createdAt desc) {
+/* Post queries */
+const postObj = `{
   image{
     asset->{
       url
     }
   },
+  _id,
+  url,
+  postedBy->{
+    _id,
+    userName,
+    image
+  },
+  save[]{
+    _key,
+    postedBy->{
       _id,
-      destination,
-      postedBy->{
-        _id,
-        userName,
-        image
-      },
-      save[]{
-        _key,
-        postedBy->{
-          _id,
-          userName,
-          image
-        },
-      },
-    } `
+      userName,
+      image
+    },
+  },
+}`
+export const feedQuery = `*[_type == "post"] | order(_createdAt desc)${postObj}`
 
 export const postDetailQuery = (postId) => {
   const query = `*[_type == "post" && _id == '${postId}']{
@@ -114,108 +67,32 @@ export const postDetailQuery = (postId) => {
 }
 
 export const morePostQuery = (post) => {
-  const query = `*[_type == "post" && category == '${post.category}' && _id != '${post._id}' ]{
-    image{
-      asset->{
-        url
-      }
-    },
-    _id,
-    destination,
-    postedBy->{
-      _id,
-      userName,
-      image
-    },
-    save[]{
-      _key,
-      postedBy->{
-        _id,
-        userName,
-        image
-      },
-    },
-  }`
+  const query = `*[_type == "post" && category == '${post.category}' && _id != '${post._id}' ]${postObj}`
   return query
 }
 
 export const searchQuery = (searchTerm) => {
-  const query = `*[_type == "post" && title match '${searchTerm}*' || category match '${searchTerm}*' || about match '${searchTerm}*']{
-        image{
-          asset->{
-            url
-          }
-        },
-            _id,
-            destination,
-            postedBy->{
-              _id,
-              userName,
-              image
-            },
-            save[]{
-              _key,
-              postedBy->{
-                _id,
-                userName,
-                image
-              },
-            },
-          }`
-  return query
-}
-
-export const userQuery = (userId) => {
-  const query = `*[_type == "user" && _id == '${userId}']`
+  const query = `*[_type == "post" && title match '${searchTerm}*' || category match '${searchTerm}*' || about match '${searchTerm}*']${postObj}`
   return query
 }
 
 export const userCreatedPostsQuery = (userId) => {
-  const query = `*[ _type == 'post' && userId == '${userId}'] | order(_createdAt desc){
-    image{
-      asset->{
-        url
-      }
-    },
-    _id,
-    destination,
-    postedBy->{
-      _id,
-      userName,
-      image
-    },
-    save[]{
-      postedBy->{
-        _id,
-        userName,
-        image
-      },
-    },
-  }`
+  const query = `*[ _type == 'post' && userId == '${userId}'] | order(_createdAt desc)${postObj}`
   return query
 }
 
 export const userSavedPostsQuery = (userId) => {
-  const query = `*[_type == 'post' && '${userId}' in save[].userId ] | order(_createdAt desc) {
-    image{
-      asset->{
-        url
-      }
-    },
-    _id,
-    destination,
-    postedBy->{
-      _id,
-      userName,
-      image
-    },
-    save[]{
-      postedBy->{
-        _id,
-        userName,
-        image
-      },
-    },
-  }`
+  const query = `*[_type == 'post' && '${userId}' in save[].userId ] | order(_createdAt desc)${postObj}`
   return query
 }
+
+/* Category queries */
+export const categoriesQuery = `*[_type == "category"] | order(categoryName asc){
+  image{
+    asset->{
+      url
+    }
+  },
+  _id,
+  categoryName,
+}`

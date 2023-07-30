@@ -11,7 +11,6 @@ const breakpointColumnsObj = {
 }
 
 const MasonryLayout = ({posts}) => {
-  console.log(posts)
   return (
     <Masonry className="flex animate-slide-fwd" breakpointCols={breakpointColumnsObj}>
       {posts?.map((post) => (

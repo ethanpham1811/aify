@@ -4,23 +4,28 @@ import {AiFillCloseCircle} from 'react-icons/ai'
 import {Link, Route, Routes} from 'react-router-dom'
 
 import {Sidebar, UserProfile} from '../components'
-import {userQuery} from '../utils/data'
+import {userQuery, categoriesQuery} from '../utils/data'
 import {client} from '../client'
 import Posts from './Posts'
-// import logo from '../assets/logo.png'
+import logo from '../assets/logo.png'
 
 const Home = () => {
   const [toggleSidebar, setToggleSidebar] = useState(false)
   const [user, setUser] = useState()
+  const [categories, setCategories] = useState()
   const scrollRef = useRef(null)
 
   const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
 
   useEffect(() => {
-    const query = userQuery(userInfo?.jti)
-
-    client.fetch(query).then((data) => {
+    /* fetch User data */
+    client.fetch(userQuery(userInfo?.jti)).then((data) => {
       setUser(data[0])
+    })
+    /* fetch categories data */
+    client.fetch(categoriesQuery).then((data) => {
+      setCategories(data)
+      console.log(data)
     })
   }, [])
 
@@ -31,13 +36,13 @@ const Home = () => {
   return (
     <div className="flex bg-gray-50 md:flex-row flex-col h-screen transition-height duration-75 ease-out">
       <div className="hidden md:flex h-screen flex-initial">
-        <Sidebar user={user && user} />
+        <Sidebar user={user && user} categories={categories && categories} />
       </div>
       <div className="flex md:hidden flex-row">
         <div className="p-2 w-full flex flex-row justify-between items-center shadow-md">
           <HiMenu fontSize={40} className="cursor-pointer" onClick={() => setToggleSidebar(true)} />
           <Link to="/">
-            <img src={''} alt="logo" className="w-28" />
+            <img src={logo} alt="logo" className="w-28" />
           </Link>
           <Link to={`user-profile/${user?._id}`}>
             <img src={user?.image} alt="user-pic" className="w-9 h-9 rounded-full " />

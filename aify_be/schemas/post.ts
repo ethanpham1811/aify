@@ -20,8 +20,8 @@ export default {
     },
     {
       name: 'category',
-      type: 'string',
-      title: 'Category',
+      type: 'reference',
+      to: [{type: 'category'}],
     },
     {
       name: 'image',
