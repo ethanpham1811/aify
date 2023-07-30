@@ -1,23 +1,22 @@
-import {useState} from 'react'
 import {Routes, Route} from 'react-router-dom'
 
-import {Navbar, Feed, PostDetail, CreatePost, Search} from '../components'
+import {Navbar, Feed, PostDetail, CreatePost} from '../components'
+import {useState} from 'react'
 
 const Posts = ({user, categories}) => {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState(null)
 
   return (
     <div className="px-2 md:px-5">
       <div className="bg-gray-50">
-        <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} user={user} />
+        <Navbar user={user} handleSearch={(val) => setSearchTerm(val)} />
       </div>
       <div className="h-full">
         <Routes>
-          <Route path="/" element={<Feed />} />
-          <Route path="/category/:categoryId" element={<Feed />} />
+          <Route path="/" element={<Feed searchTerm={searchTerm} />} />
+          <Route path="/category/:categoryId" element={<Feed searchTerm={searchTerm} />} />
           <Route path="/post-detail/:postId" element={<PostDetail user={user} />} />
           <Route path="/create-post" element={<CreatePost user={user} categories={categories} />} />
-          <Route path="/search" element={<Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
         </Routes>
       </div>
     </div>

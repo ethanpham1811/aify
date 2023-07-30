@@ -5,7 +5,7 @@ import i10n from '../i10n/en.json'
 import {breakpointColumnsObj} from '../enums'
 
 const MasonryLayout = ({posts}) => {
-  return posts.length ? (
+  return posts?.length > 0 ? (
     <Masonry className="flex animate-slide-fwd" breakpointCols={breakpointColumnsObj}>
       {posts?.map((post) => (
         <Post key={post._id} post={post} className="w-max" />

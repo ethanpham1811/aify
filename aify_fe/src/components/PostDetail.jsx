@@ -56,10 +56,12 @@ const PostDetail = ({user}) => {
   return (
     <>
       {postDetail && (
-        <div className="flex xl:flex-row flex-col m-auto bg-white" style={{maxWidth: '1500px', borderRadius: '32px'}}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:flex-row flex-col m-auto bg-white" style={{maxWidth: '1500px', borderRadius: '32px'}}>
+          {/* Left side: Image */}
           <div className="flex justify-center items-center md:items-start flex-initial">
             <img className="rounded-t-3xl rounded-b-lg" src={postDetail?.image && urlFor(postDetail?.image).url()} alt="user-post" />
           </div>
+          {/* Right side: Info */}
           <div className="w-full p-5 flex-1 xl:min-w-620">
             <div className="flex items-center justify-between">
               <div className="flex gap-2 items-center">
@@ -97,7 +99,7 @@ const PostDetail = ({user}) => {
             </div>
             <div className="flex flex-wrap mt-6 gap-3">
               <Link to={`/user-profile/${user?._id}`}>
-                <img src={user.image} className="w-10 h-10 rounded-full cursor-pointer" alt="user-profile" />
+                <img src={user?.image} className="w-10 h-10 rounded-full cursor-pointer" alt="user-profile" />
               </Link>
               <input
                 className=" flex-1 border-gray-100 outline-none border-2 p-2 rounded-2xl focus:border-gray-300"

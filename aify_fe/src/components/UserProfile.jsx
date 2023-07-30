@@ -3,7 +3,7 @@ import {AiOutlineLogout} from 'react-icons/ai'
 import {useParams, useNavigate} from 'react-router-dom'
 import {googleLogout} from '@react-oauth/google'
 
-import {userCreatedPostsQuery, userQuery, userSavedPostsQuery} from '../utils/data'
+import {userPostsQuery, userQuery, userSavedPostsQuery} from '../utils/data'
 import {client} from '../client'
 import MasonryLayout from './MasonryLayout'
 import Spinner from './Spinner'
@@ -30,7 +30,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     if (text === 'Created') {
-      const createdPostsQuery = userCreatedPostsQuery(userId)
+      const createdPostsQuery = userPostsQuery(userId)
 
       client.fetch(createdPostsQuery).then((data) => {
         setPosts(data)
