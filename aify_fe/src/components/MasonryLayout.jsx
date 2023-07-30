@@ -1,22 +1,18 @@
 import Masonry from 'react-masonry-css'
 import Post from './Post'
 
-const breakpointColumnsObj = {
-  default: 4,
-  3000: 6,
-  2000: 5,
-  1200: 3,
-  1000: 2,
-  500: 1
-}
+import i10n from '../i10n/en.json'
+import {breakpointColumnsObj} from '../enums'
 
 const MasonryLayout = ({posts}) => {
-  return (
+  return posts.length ? (
     <Masonry className="flex animate-slide-fwd" breakpointCols={breakpointColumnsObj}>
       {posts?.map((post) => (
         <Post key={post._id} post={post} className="w-max" />
       ))}
     </Masonry>
+  ) : (
+    <p className="text-center">{i10n.noPostFounded}</p>
   )
 }
 

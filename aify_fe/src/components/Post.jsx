@@ -10,20 +10,18 @@ import {client, urlFor} from '../client'
 const Post = ({post}) => {
   const [postHovered, setPostHovered] = useState(false)
   const [savingPost, setSavingPost] = useState(false)
-
+  const {postedBy, image, _id, url} = post
   const navigate = useNavigate()
-
-  const {postedBy, image, _id, destination} = post
 
   const user = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
 
   const deletePost = (id) => {
     client.delete(id).then(() => {
-      window.location.reload()
+      /* update list of post */
     })
   }
 
-  let alreadySaved = post?.save?.filter((item) => item?.postedBy?._id === user?.googleId)
+  let alreadySaved = post?.save?.filter((item) => item?.postedBy?._id === user?.jti)
 
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : []
 
@@ -37,10 +35,10 @@ const Post = ({post}) => {
         .insert('after', 'save[-1]', [
           {
             _key: uuidv4(),
-            userId: user?.googleId,
+            userId: user?.jti,
             postedBy: {
               _type: 'postedBy',
-              _ref: user?.googleId
+              _ref: user?.jti
             }
           }
         ])
@@ -68,9 +66,7 @@ const Post = ({post}) => {
                 <a
                   href={`${image?.asset?.url}?dl=`}
                   download
-                  onClick={(e) => {
-                    e.stopPropagation()
-                  }}
+                  onClick={(e) => e.stopPropagation()}
                   className="bg-white w-9 h-9 p-2 rounded-full flex items-center justify-center text-dark text-xl opacity-75 hover:opacity-100 hover:shadow-md outline-none"
                 >
                   <MdDownloadForOffline />
@@ -97,19 +93,19 @@ const Post = ({post}) => {
               )}
             </div>
             <div className=" flex justify-between items-center gap-2 w-full">
-              {destination?.slice(8).length > 0 ? (
+              {url?.slice(8).length > 0 ? (
                 <a
-                  href={destination}
+                  href={url}
                   target="_blank"
                   className="bg-white flex items-center gap-2 text-black font-bold p-2 pl-4 pr-4 rounded-full opacity-70 hover:opacity-100 hover:shadow-md"
                   rel="noreferrer"
                 >
                   {' '}
                   <BsFillArrowUpRightCircleFill />
-                  {destination?.slice(8, 17)}...
+                  {url?.slice(8, 17)}...
                 </a>
               ) : undefined}
-              {postedBy?._id === user?.googleId && (
+              {postedBy?._id === user?.jti && (
                 <button
                   type="button"
                   onClick={(e) => {

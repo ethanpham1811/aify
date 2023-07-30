@@ -11,28 +11,25 @@ import Spinner from './Spinner'
 const PostDetail = ({user}) => {
   const {postId} = useParams()
   const [posts, setPosts] = useState()
+  const [loading, setLoading] = useState(true)
   const [postDetail, setPostDetail] = useState()
   const [comment, setComment] = useState('')
   const [addingComment, setAddingComment] = useState(false)
 
-  const fetchPostDetails = () => {
-    const query = postDetailQuery(postId)
-
-    if (query) {
-      client.fetch(`${query}`).then((data) => {
-        setPostDetail(data[0])
-        if (data[0]) {
-          const query1 = morePostQuery(data[0])
-          client.fetch(query1).then((res) => {
-            setPosts(res)
-          })
-        }
-      })
-    }
+  const fetchPostDetail = () => {
+    client.fetch(postDetailQuery(postId)).then((data) => {
+      setPostDetail(data[0])
+      if (data[0]) {
+        client.fetch(morePostQuery(data[0])).then((res) => {
+          setPosts(res)
+          setLoading(false)
+        })
+      }
+    })
   }
 
   useEffect(() => {
-    fetchPostDetails()
+    fetchPostDetail()
   }, [postId])
 
   const addComment = () => {
@@ -41,11 +38,11 @@ const PostDetail = ({user}) => {
 
       client
         .patch(postId)
-        .setIfMissing({comments: []})
-        .insert('after', 'comments[-1]', [{comment, _key: uuidv4(), postedBy: {_type: 'postedBy', _ref: user._id}}])
+        .setIfMissing({comment: []})
+        .insert('after', 'comment[-1]', [{comment, _key: uuidv4(), postedBy: {_type: 'postedBy', _ref: user._id}}])
         .commit()
-        .then(() => {
-          fetchPostDetails()
+        .then((res) => {
+          setPostDetail(res)
           setComment('')
           setAddingComment(false)
         })
@@ -74,13 +71,13 @@ const PostDetail = ({user}) => {
                   <MdDownloadForOffline />
                 </a>
               </div>
-              <a href={postDetail.destination} target="_blank" rel="noreferrer">
-                {postDetail.destination?.slice(8)}
+              <a href={postDetail.url} target="_blank" rel="noreferrer">
+                {postDetail.url?.slice(8)}
               </a>
             </div>
             <div>
               <h1 className="text-4xl font-bold break-words mt-3">{postDetail.title}</h1>
-              <p className="mt-3">{postDetail.about}</p>
+              <p className="mt-3">{postDetail.description}</p>
             </div>
             <Link to={`/user-profile/${postDetail?.postedBy._id}`} className="flex gap-2 mt-5 items-center bg-white rounded-lg ">
               <img src={postDetail?.postedBy.image} className="w-10 h-10 rounded-full" alt="user-profile" />
@@ -88,7 +85,7 @@ const PostDetail = ({user}) => {
             </Link>
             <h2 className="mt-5 text-2xl">Comments</h2>
             <div className="max-h-370 overflow-y-auto">
-              {postDetail?.comments?.map((item) => (
+              {postDetail?.comment?.map((item) => (
                 <div className="flex gap-2 mt-5 items-center bg-white rounded-lg" key={item.comment}>
                   <img src={item.postedBy?.image} className="w-10 h-10 rounded-full cursor-pointer" alt="user-profile" />
                   <div className="flex flex-col">
@@ -99,7 +96,7 @@ const PostDetail = ({user}) => {
               ))}
             </div>
             <div className="flex flex-wrap mt-6 gap-3">
-              <Link to={`/user-profile/${user._id}`}>
+              <Link to={`/user-profile/${user?._id}`}>
                 <img src={user.image} className="w-10 h-10 rounded-full cursor-pointer" alt="user-profile" />
               </Link>
               <input
@@ -120,8 +117,8 @@ const PostDetail = ({user}) => {
           </div>
         </div>
       )}
-      {posts?.length > 0 && <h2 className="text-center font-bold text-2xl mt-8 mb-4">More like this</h2>}
-      {posts ? <MasonryLayout posts={posts} /> : <Spinner message="Loading more posts" />}
+      {<h2 className="text-center font-bold text-2xl mt-8 mb-4">More like this</h2>}
+      {loading ? <Spinner message="Loading more posts" /> : <MasonryLayout posts={posts} />}
     </>
   )
 }

@@ -1,3 +1,5 @@
+import {generalPostRes, detailedPostRes} from './sanityResObj.js'
+
 /* User queries */
 export const userQuery = (userId) => {
   const query = `*[_type == "user" && _id == '${userId}']`
@@ -5,84 +7,35 @@ export const userQuery = (userId) => {
 }
 
 /* Post queries */
-const postObj = `{
-  image{
-    asset->{
-      url
-    }
-  },
-  _id,
-  url,
-  postedBy->{
-    _id,
-    userName,
-    image
-  },
-  save[]{
-    _key,
-    postedBy->{
-      _id,
-      userName,
-      image
-    },
-  },
-}`
-export const feedQuery = `*[_type == "post"] | order(_createdAt desc)${postObj}`
+export const feedQuery = `*[_type == "post"] | order(_createdAt desc)${generalPostRes}`
 
 export const postDetailQuery = (postId) => {
-  const query = `*[_type == "post" && _id == '${postId}']{
-    image{
-      asset->{
-        url
-      }
-    },
-    _id,
-    title, 
-    about,
-    category,
-    destination,
-    postedBy->{
-      _id,
-      userName,
-      image
-    },
-   save[]{
-      postedBy->{
-        _id,
-        userName,
-        image
-      },
-    },
-    comments[]{
-      comment,
-      _key,
-      postedBy->{
-        _id,
-        userName,
-        image
-      },
-    }
-  }`
+  const query = `*[_type == "post" && _id == '${postId}']${detailedPostRes}`
   return query
 }
 
 export const morePostQuery = (post) => {
-  const query = `*[_type == "post" && category == '${post.category}' && _id != '${post._id}' ]${postObj}`
+  const query = `*[_type == "post" && category == '${post.category}' && _id != '${post._id}' ]${generalPostRes}`
   return query
 }
 
 export const searchQuery = (searchTerm) => {
-  const query = `*[_type == "post" && title match '${searchTerm}*' || category match '${searchTerm}*' || about match '${searchTerm}*']${postObj}`
+  const query = `*[_type == "post" && title match '${searchTerm}*' || category match '${searchTerm}*' || description match '${searchTerm}*']${generalPostRes}`
   return query
 }
 
 export const userCreatedPostsQuery = (userId) => {
-  const query = `*[ _type == 'post' && userId == '${userId}'] | order(_createdAt desc)${postObj}`
+  const query = `*[ _type == 'post' && userId == '${userId}'] | order(_createdAt desc)${generalPostRes}`
   return query
 }
 
 export const userSavedPostsQuery = (userId) => {
-  const query = `*[_type == 'post' && '${userId}' in save[].userId ] | order(_createdAt desc)${postObj}`
+  const query = `*[_type == 'post' && '${userId}' in save[].userId ] | order(_createdAt desc)${generalPostRes}`
+  return query
+}
+
+export const postByCategoryQuery = (categoryId) => {
+  const query = `*[_type == "post" && category._ref == '${categoryId}']${generalPostRes}`
   return query
 }
 

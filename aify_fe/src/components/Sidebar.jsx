@@ -26,7 +26,7 @@ const Sidebar = ({closeToggle, user, categories}) => {
           {categories?.length &&
             categories.slice(0, categories.length - 1).map((category) => (
               <NavLink
-                to={`/category/${category.categoryName}`}
+                to={`/category/${category._id}`}
                 className={({isActive}) => (isActive ? isActiveStyle : isNotActiveStyle)}
                 onClick={handleCloseSidebar}
                 key={category.categoryName}

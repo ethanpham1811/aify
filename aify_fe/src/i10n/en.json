@@ -1,0 +1,7 @@
+{
+  "unsupportedFileMsg": "This file type is not supported",
+  "allFieldsRequired": "Please input all fields.",
+  "uploadFileInstruction": "(JPG, JPEG, SVG, PNG, GIF or TIFF less than 20MB)",
+  "loadingPost": "Loading posts...",
+  "noPostFounded": "Sorry, no post founded."
+}

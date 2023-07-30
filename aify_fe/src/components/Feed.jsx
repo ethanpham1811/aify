@@ -2,9 +2,10 @@ import {useState, useEffect} from 'react'
 import {useParams} from 'react-router-dom'
 
 import {client} from '../client'
-import {feedQuery, searchQuery} from '../utils/data'
+import {feedQuery, postByCategoryQuery} from '../utils/data'
 import MasonryLayout from './MasonryLayout'
 import Spinner from './Spinner'
+import i10n from '../i10n/en.json'
 
 const Feed = () => {
   const [posts, setPosts] = useState()
@@ -12,27 +13,14 @@ const Feed = () => {
   const {categoryId} = useParams()
 
   useEffect(() => {
-    if (categoryId) {
-      setLoading(true)
-      const query = searchQuery(categoryId)
-      client.fetch(query).then((data) => {
-        setPosts(data)
-        setLoading(false)
-      })
-    } else {
-      setLoading(true)
-
-      client.fetch(feedQuery).then((data) => {
-        setPosts(data)
-        setLoading(false)
-      })
-    }
+    setLoading(true)
+    client.fetch(categoryId ? postByCategoryQuery(categoryId) : feedQuery).then((data) => {
+      setPosts(data)
+      setLoading(false)
+    })
   }, [categoryId])
-  const ideaName = categoryId || 'new'
-  if (loading) {
-    return <Spinner message={`We are adding ${ideaName} ideas to your feed!`} />
-  }
-  return <div>{posts && <MasonryLayout posts={posts} />}</div>
+
+  return loading ? <Spinner message={i10n.loadingPost} /> : <div className="w-full">{posts && <MasonryLayout posts={posts} />}</div>
 }
 
 export default Feed

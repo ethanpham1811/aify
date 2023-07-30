@@ -19,9 +19,7 @@ const Login = () => {
       userName: name,
       image: picture
     }
-    client.createIfNotExists(doc).then(() => {
-      navigate('/', {replace: true})
-    })
+    client.createIfNotExists(doc).then(() => navigate('/', {replace: true}))
   }
 
   return (
